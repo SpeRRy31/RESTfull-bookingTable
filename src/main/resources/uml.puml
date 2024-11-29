@@ -1,0 +1,39 @@
+@startuml
+
+' Контролери
+class UserController {
+    + getUserById(Long): ResponseEntity<UserDTO>
+    + createUser(UserDTO): ResponseEntity<UserDTO>
+    + updateUser(Long, UserDTO): ResponseEntity<UserDTO>
+    + deleteUser(Long): ResponseEntity<Void>
+}
+
+class TableController {
+    + getTableById(Long): ResponseEntity<TableDTO>
+    + createTable(TableDTO): ResponseEntity<TableDTO>
+    + updateTable(Long, TableDTO): ResponseEntity<TableDTO>
+    + deleteTable(Long): ResponseEntity<Void>
+}
+
+class ReservationController {
+    + getReservationById(Long): ResponseEntity<ReservationDTO>
+    + createReservation(ReservationDTO): ResponseEntity<ReservationDTO>
+    + updateReservation(Long, ReservationDTO): ResponseEntity<ReservationDTO>
+    + deleteReservation(Long): ResponseEntity<Void>
+}
+
+class MessageController {
+    + getMessageById(Long): ResponseEntity<MessageDTO>
+    + createMessage(MessageDTO): ResponseEntity<MessageDTO>
+    + updateMessage(Long, MessageDTO): ResponseEntity<MessageDTO>
+    + deleteMessage(Long): ResponseEntity<Void>
+}
+
+class RestaurantController {
+    + getRestaurantById(Long): ResponseEntity<RestaurantDTO>
+    + createRestaurant(RestaurantDTO): ResponseEntity<RestaurantDTO>
+    + updateRestaurant(Long, RestaurantDTO): ResponseEntity<RestaurantDTO>
+    + deleteRestaurant(Long): ResponseEntity<Void>
+}
+
+@enduml
