@@ -1,59 +1,67 @@
 package app.service;
 
+import app.dto.UserDTO;
 import app.entity.User;
+import app.mapper.UserMapper;
 import app.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     // Отримати всіх користувачів
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toDTO) // Перетворення з Entity у DTO
+                .collect(Collectors.toList());
     }
 
-    // Отримати користувача за id
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    // Отримати користувача за ID
+    public UserDTO getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Користувача не знайдено"));
+        return userMapper.toDTO(user);
     }
 
-    // Створити нового користувача
-    public User createUser(User user) {
-        return userRepository.save(user);
+    // Створити користувача
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = userMapper.toEntity(userDTO); // Перетворення з DTO у Entity
+        User savedUser = userRepository.save(user);
+        return userMapper.toDTO(savedUser);
     }
 
     // Оновити користувача
-    public User updateUser(Long id, User userDetails) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserDTO updateUser(Long id, UserDTO userDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Користувача не знайдено"));
 
-        user.setName(userDetails.getName());
-        user.setEmail(userDetails.getEmail());
-        user.setPassword(userDetails.getPassword());
-        user.setPhoneNumber(userDetails.getPhoneNumber());
-        user.setIsAdmin(userDetails.getIsAdmin());
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setIsAdmin(userDTO.getIsAdmin());
 
-        return userRepository.save(user);
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDTO(updatedUser);
     }
 
     // Видалити користувача
     public void deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        userRepository.delete(user);
-    }
-
-    // Знайти користувача за email
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("Користувача не знайдено");
+        }
+        userRepository.deleteById(id);
     }
 }

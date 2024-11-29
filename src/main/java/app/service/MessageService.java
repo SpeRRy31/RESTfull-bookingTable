@@ -1,52 +1,52 @@
 package app.service;
 
+import app.dto.MessageDTO;
 import app.entity.Message;
+import app.mapper.MessageMapper;
 import app.repository.MessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
 
     private final MessageRepository messageRepository;
+    private final MessageMapper messageMapper;
 
-    @Autowired
-    public MessageService(MessageRepository messageRepository) {
+    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper) {
         this.messageRepository = messageRepository;
+        this.messageMapper = messageMapper;
     }
 
     // Отримати всі повідомлення
-    public List<Message> getAllMessages() {
-        return messageRepository.findAll();
+    public List<MessageDTO> getAllMessages() {
+        return messageRepository.findAll()
+                .stream()
+                .map(messageMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    // Отримати повідомлення за id
-    public Optional<Message> getMessageById(Long id) {
-        return messageRepository.findById(id);
+    // Отримати повідомлення за ID
+    public MessageDTO getMessageById(Long id) {
+        Message message = messageRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Повідомлення не знайдено"));
+        return messageMapper.toDTO(message);
     }
 
-    // Створити нове повідомлення
-    public Message createMessage(Message message) {
-        return messageRepository.save(message);
-    }
-
-    // Оновити повідомлення
-    public Message updateMessage(Long id, Message messageDetails) {
-        Message message = messageRepository.findById(id).orElseThrow(() -> new RuntimeException("Message not found"));
-
-        message.setName(messageDetails.getName());
-        message.setEmail(messageDetails.getEmail());
-        message.setMessage(messageDetails.getMessage());
-
-        return messageRepository.save(message);
+    // Додати нове повідомлення
+    public MessageDTO createMessage(MessageDTO messageDTO) {
+        Message message = messageMapper.toEntity(messageDTO);
+        Message savedMessage = messageRepository.save(message);
+        return messageMapper.toDTO(savedMessage);
     }
 
     // Видалити повідомлення
     public void deleteMessage(Long id) {
-        Message message = messageRepository.findById(id).orElseThrow(() -> new RuntimeException("Message not found"));
-        messageRepository.delete(message);
+        if (!messageRepository.existsById(id)) {
+            throw new RuntimeException("Повідомлення не знайдено");
+        }
+        messageRepository.deleteById(id);
     }
 }

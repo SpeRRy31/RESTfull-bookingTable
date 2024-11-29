@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "mes")
+@jakarta.persistence.Table(name = "mes")
 public class Message {
 
     @Id
@@ -14,7 +14,8 @@ public class Message {
     private Long id;
 
     private String name;
-    private String email;
-    private String message;
 
+    private String email;
+
+    private String message;
 }

@@ -1,55 +1,66 @@
 package app.service;
 
+import app.dto.ReservationDTO;
 import app.entity.Reservation;
+import app.mapper.ReservationMapper;
 import app.repository.ReservationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final ReservationMapper reservationMapper;
 
-    @Autowired
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, ReservationMapper reservationMapper) {
         this.reservationRepository = reservationRepository;
+        this.reservationMapper = reservationMapper;
     }
 
-    // Отримати всі резервування
-    public List<Reservation> getAllReservations() {
-        return reservationRepository.findAll();
+    // Отримати всі резервації
+    public List<ReservationDTO> getAllReservations() {
+        return reservationRepository.findAll()
+                .stream()
+                .map(reservationMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    // Отримати резервування за id
-    public Optional<Reservation> getReservationById(Long id) {
-        return reservationRepository.findById(id);
+    // Отримати резервацію за ID
+    public ReservationDTO getReservationById(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Резервацію не знайдено"));
+        return reservationMapper.toDTO(reservation);
     }
 
-    // Створити нове резервування
-    public Reservation createReservation(Reservation reservation) {
-        return reservationRepository.save(reservation);
+    // Створити нову резервацію
+    public ReservationDTO createReservation(ReservationDTO reservationDTO) {
+        Reservation reservation = reservationMapper.toEntity(reservationDTO);
+        Reservation savedReservation = reservationRepository.save(reservation);
+        return reservationMapper.toDTO(savedReservation);
     }
 
-    // Оновити резервування
-    public Reservation updateReservation(Long id, Reservation reservationDetails) {
-        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new RuntimeException("Reservation not found"));
+    // Оновити резервацію
+    public ReservationDTO updateReservation(Long id, ReservationDTO reservationDTO) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Резервацію не знайдено"));
 
-        reservation.setReservationTime(reservationDetails.getReservationTime());
-        reservation.setName(reservationDetails.getName());
-        reservation.setPhone(reservationDetails.getPhone());
-        reservation.setUser(reservationDetails.getUser());
-        reservation.setTable(reservationDetails.getTable());
-        reservation.setRestaurant(reservationDetails.getRestaurant());
+        reservation.setTableId(reservationDTO.getTableId());
+        reservation.setUserId(reservationDTO.getUserId());
+        reservation.setName(reservationDTO.getName());
+        reservation.setPhone(reservationDTO.getPhone());
 
-        return reservationRepository.save(reservation);
+        Reservation updatedReservation = reservationRepository.save(reservation);
+        return reservationMapper.toDTO(updatedReservation);
     }
 
-    // Видалити резервування
+    // Видалити резервацію
     public void deleteReservation(Long id) {
-        Reservation reservation = reservationRepository.findById(id).orElseThrow(() -> new RuntimeException("Reservation not found"));
-        reservationRepository.delete(reservation);
+        if (!reservationRepository.existsById(id)) {
+            throw new RuntimeException("Резервацію не знайдено");
+        }
+        reservationRepository.deleteById(id);
     }
 }

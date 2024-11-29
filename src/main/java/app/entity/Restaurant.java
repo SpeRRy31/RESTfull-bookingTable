@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity
 @Data
+@jakarta.persistence.Table(name = "restaurants")
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,5 +18,5 @@ public class Restaurant {
     private String typeWork;
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tables> tables;
+    private List<Table> tables;
 }

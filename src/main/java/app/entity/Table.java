@@ -1,33 +1,27 @@
 package app.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import lombok.Data;
 
-@Data
 @Entity
-@Table(name = "tables")
-public class Tables {
+@jakarta.persistence.Table(name = "tables")
+@Data
+public class Table {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private int seats;
+    private Integer seats;
 
-    @Column
     private String location;
 
-    @Column(nullable = false)
-    private boolean availability;
+    private Boolean availability;
 
-    @Column(length = 50)
     private String type;
 
     @Column(name = "minimum_order")
-    private BigDecimal minimumOrder;
+    private Double minimumOrder;
 
-    @Column
     private String image;
 }

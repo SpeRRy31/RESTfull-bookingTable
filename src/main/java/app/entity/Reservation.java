@@ -1,42 +1,24 @@
 package app.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import java.time.LocalDateTime;
-
-@Getter
-@Setter
 @Entity
-@Table(name = "reservations")
+@jakarta.persistence.Table(name = "reservations")
+@Data
 public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDateTime reservationTime;
+    @Column(name = "tables_id")
+    private Long tableId;
 
-    @Column(nullable = false)
+    @Column(name = "user_id")
+    private Long userId;
+
     private String name;
 
-    @Column(nullable = false)
     private String phone;
-
-    // Зв'язок багато-до-одного з User
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    // Зв'язок багато-до-одного з Table
-    @ManyToOne
-    @JoinColumn(name = "table_id", nullable = false)
-    private Tables table;
-
-    // Зв'язок багато-до-одного з Restaurant (ресторан, до якого належить стіл)
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id", nullable = false)
-    private Restaurant restaurant;
 }

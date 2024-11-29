@@ -47,6 +47,8 @@
             <artifactId>javax.persistence-api</artifactId>
             <version>2.2</version> <!-- або актуальну версію -->
         </dependency>
+
+
     </dependencies>
 
     <repositories>
