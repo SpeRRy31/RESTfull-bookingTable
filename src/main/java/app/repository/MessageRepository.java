@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    // Можна додавати додаткові методи запитів, якщо потрібно
+    // Методи для додаткових запитів можна додавати тут
 }

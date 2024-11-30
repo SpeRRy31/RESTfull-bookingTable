@@ -2,8 +2,9 @@ package app.service;
 
 import app.dto.RestaurantDTO;
 import app.entity.Restaurant;
-import app.mapper.RestaurantMapper;
 import app.repository.RestaurantRepository;
+import app.mapper.RestaurantMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,54 +13,40 @@ import java.util.stream.Collectors;
 @Service
 public class RestaurantService {
 
-    private final RestaurantRepository restaurantRepository;
-    private final RestaurantMapper restaurantMapper;
+    @Autowired
+    private RestaurantRepository restaurantRepository;
 
-    public RestaurantService(RestaurantRepository restaurantRepository, RestaurantMapper restaurantMapper) {
-        this.restaurantRepository = restaurantRepository;
-        this.restaurantMapper = restaurantMapper;
-    }
+    @Autowired
+    private RestaurantMapper restaurantMapper;
 
-    // Отримати всі ресторани
+    // Отримати список всіх ресторанів
     public List<RestaurantDTO> getAllRestaurants() {
-        return restaurantRepository.findAll()
-                .stream()
-                .map(restaurantMapper::toDTO) // Перетворення з Entity у DTO
+        List<Restaurant> restaurants = restaurantRepository.findAll();
+        return restaurants.stream()
+                .map(restaurantMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    // Отримати ресторан за ID
-    public RestaurantDTO getRestaurantById(Long id) {
-        Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ресторан не знайдено"));
-        return restaurantMapper.toDTO(restaurant);
-    }
-
-    // Створити ресторан
+    // Додати новий ресторан
     public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) {
-        Restaurant restaurant = restaurantMapper.toEntity(restaurantDTO); // Перетворення з DTO у Entity
-        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
-        return restaurantMapper.toDTO(savedRestaurant);
+        Restaurant restaurant = restaurantMapper.toEntity(restaurantDTO);
+        restaurant = restaurantRepository.save(restaurant);
+        return restaurantMapper.toDto(restaurant);
     }
 
     // Оновити ресторан
     public RestaurantDTO updateRestaurant(Long id, RestaurantDTO restaurantDTO) {
-        Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ресторан не знайдено"));
-
-        restaurant.setName(restaurantDTO.getName());
-        restaurant.setAddress(restaurantDTO.getAddress());
-        restaurant.setTypeWork(restaurantDTO.getTypeWork());
-
-        Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
-        return restaurantMapper.toDTO(updatedRestaurant);
+        Restaurant existingRestaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+        existingRestaurant.setName(restaurantDTO.getName());
+        existingRestaurant.setAddress(restaurantDTO.getAddress());
+        existingRestaurant.setTypeWork(restaurantDTO.getTypeWork());
+        existingRestaurant = restaurantRepository.save(existingRestaurant);
+        return restaurantMapper.toDto(existingRestaurant);
     }
 
     // Видалити ресторан
     public void deleteRestaurant(Long id) {
-        if (!restaurantRepository.existsById(id)) {
-            throw new RuntimeException("Ресторан не знайдено");
-        }
         restaurantRepository.deleteById(id);
     }
 }

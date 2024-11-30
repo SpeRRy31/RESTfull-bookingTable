@@ -47,7 +47,19 @@
             <artifactId>javax.persistence-api</artifactId>
             <version>2.2</version> <!-- або актуальну версію -->
         </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.5.3.Final</version> <!-- Версія MapStruct -->
+        </dependency>
 
+        <!-- Залежність для підтримки аннотацій у час компіляції -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.5.3.Final</version> <!-- Та ж версія, що й для mapstruct -->
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 

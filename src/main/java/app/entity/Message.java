@@ -1,12 +1,13 @@
 package app.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 
-import javax.persistence.*;
-
-@Data
 @Entity
-@jakarta.persistence.Table(name = "mes")
+@Data // Lombok автоматично генерує геттери, сеттери, toString, equals, hashCode
 public class Message {
 
     @Id
@@ -14,8 +15,6 @@ public class Message {
     private Long id;
 
     private String name;
-
     private String email;
-
     private String message;
 }

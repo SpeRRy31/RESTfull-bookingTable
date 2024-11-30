@@ -2,26 +2,15 @@ package app.mapper;
 
 import app.dto.RestaurantDTO;
 import app.entity.Restaurant;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class RestaurantMapper {
+@Mapper(componentModel = "spring")
+public interface RestaurantMapper {
 
-    public RestaurantDTO toDTO(Restaurant restaurant) {
-        RestaurantDTO dto = new RestaurantDTO();
-        dto.setId(restaurant.getId());
-        dto.setName(restaurant.getName());
-        dto.setAddress(restaurant.getAddress());
-        dto.setTypeWork(restaurant.getTypeWork());
-        return dto;
-    }
+    RestaurantMapper INSTANCE = Mappers.getMapper(RestaurantMapper.class);
 
-    public Restaurant toEntity(RestaurantDTO dto) {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(dto.getId());
-        restaurant.setName(dto.getName());
-        restaurant.setAddress(dto.getAddress());
-        restaurant.setTypeWork(dto.getTypeWork());
-        return restaurant;
-    }
+    RestaurantDTO toDto(Restaurant restaurant);
+
+    Restaurant toEntity(RestaurantDTO restaurantDTO);
 }

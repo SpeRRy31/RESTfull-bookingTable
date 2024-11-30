@@ -21,4 +21,9 @@ public class Reservation {
     private String name;
 
     private String phone;
+
+    // Зв'язок багато-до-одного з User
+    @ManyToOne
+    @JoinColumn(name = "user_id", insertable = false, updatable = false) // зв'язок через зовнішній ключ
+    private User user;
 }

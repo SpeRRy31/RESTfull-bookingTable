@@ -29,7 +29,7 @@ public class User {
     @Column(nullable = false)
     private Boolean isAdmin;
 
-    // Зв'язок один-до-багатьох із Reservations
+    // Зв'язок один-до-багатьох з Reservations
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private java.util.List<Reservation> reservations;
 }

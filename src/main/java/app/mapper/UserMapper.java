@@ -2,32 +2,17 @@ package app.mapper;
 
 import app.dto.UserDTO;
 import app.entity.User;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class UserMapper {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    // Перетворення з Entity у DTO
-    public UserDTO toDTO(User user) {
-        UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setPassword(user.getPassword()); // Ви можете хешувати паролі перед поверненням
-        dto.setPhoneNumber(user.getPhoneNumber());
-        dto.setIsAdmin(user.getIsAdmin());
-        return dto;
-    }
+    @Mapping(source = "reservations", target = "reservations")
+    UserDTO toDTO(User user);
 
-    // Перетворення з DTO у Entity
-    public User toEntity(UserDTO dto) {
-        User user = new User();
-        user.setId(dto.getId());
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
-        user.setPhoneNumber(dto.getPhoneNumber());
-        user.setIsAdmin(dto.getIsAdmin());
-        return user;
-    }
+    @Mapping(source = "reservations", target = "reservations")
+    User toEntity(UserDTO userDTO);
 }

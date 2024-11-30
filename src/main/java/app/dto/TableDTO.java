@@ -11,4 +11,5 @@ public class TableDTO {
     private String type;
     private Double minimumOrder;
     private String image;
+    private RestaurantDTO restaurant; // додано зв'язок
 }

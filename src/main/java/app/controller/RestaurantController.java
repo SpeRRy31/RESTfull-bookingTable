@@ -2,6 +2,8 @@ package app.controller;
 
 import app.dto.RestaurantDTO;
 import app.service.RestaurantService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,40 +13,41 @@ import java.util.List;
 @RequestMapping("/api/restaurants")
 public class RestaurantController {
 
-    private final RestaurantService restaurantService;
-
-    public RestaurantController(RestaurantService restaurantService) {
-        this.restaurantService = restaurantService;
-    }
+    @Autowired
+    private RestaurantService restaurantService;
 
     // Отримати всі ресторани
     @GetMapping
-    public ResponseEntity<List<RestaurantDTO>> getAllRestaurants() {
-        return ResponseEntity.ok(restaurantService.getAllRestaurants());
+    public List<RestaurantDTO> getAllRestaurants() {
+        return restaurantService.getAllRestaurants();
     }
 
     // Отримати ресторан за ID
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantDTO> getRestaurantById(@PathVariable Long id) {
-        return ResponseEntity.ok(restaurantService.getRestaurantById(id));
+        RestaurantDTO restaurant = restaurantService.getAllRestaurants()
+                .stream()
+                .filter(r -> r.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+        return ResponseEntity.ok(restaurant);
     }
 
     // Додати новий ресторан
     @PostMapping
     public ResponseEntity<RestaurantDTO> createRestaurant(@RequestBody RestaurantDTO restaurantDTO) {
-        return ResponseEntity.ok(restaurantService.createRestaurant(restaurantDTO));
+        RestaurantDTO createdRestaurant = restaurantService.createRestaurant(restaurantDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdRestaurant);
     }
 
-    // Оновити ресторан за ID
+    // Оновити ресторан
     @PutMapping("/{id}")
-    public ResponseEntity<RestaurantDTO> updateRestaurant(
-            @PathVariable Long id,
-            @RequestBody RestaurantDTO restaurantDTO
-    ) {
-        return ResponseEntity.ok(restaurantService.updateRestaurant(id, restaurantDTO));
+    public ResponseEntity<RestaurantDTO> updateRestaurant(@PathVariable Long id, @RequestBody RestaurantDTO restaurantDTO) {
+        RestaurantDTO updatedRestaurant = restaurantService.updateRestaurant(id, restaurantDTO);
+        return ResponseEntity.ok(updatedRestaurant);
     }
 
-    // Видалити ресторан за ID
+    // Видалити ресторан
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable Long id) {
         restaurantService.deleteRestaurant(id);

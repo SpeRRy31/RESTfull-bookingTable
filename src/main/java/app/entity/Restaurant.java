@@ -17,6 +17,7 @@ public class Restaurant {
     private String address;
     private String typeWork;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "restaurant")
     private List<Table> tables;
+
 }

@@ -2,52 +2,40 @@ package app.controller;
 
 import app.dto.ReservationDTO;
 import app.service.ReservationService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reservations")
+@RequestMapping("/reservations")
 public class ReservationController {
 
-    private final ReservationService reservationService;
+    @Autowired
+    private ReservationService reservationService;
 
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
-
-    // Отримати всі резервації
-    @GetMapping
-    public ResponseEntity<List<ReservationDTO>> getAllReservations() {
-        return ResponseEntity.ok(reservationService.getAllReservations());
-    }
-
-    // Отримати резервацію за ID
     @GetMapping("/{id}")
-    public ResponseEntity<ReservationDTO> getReservationById(@PathVariable Long id) {
-        return ResponseEntity.ok(reservationService.getReservationById(id));
+    public ReservationDTO getReservationById(@PathVariable Long id) {
+        return reservationService.getReservationById(id);
     }
 
-    // Додати нову резервацію
+    @GetMapping
+    public List<ReservationDTO> getAllReservations() {
+        return reservationService.getAllReservations();
+    }
+
     @PostMapping
-    public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
-        return ResponseEntity.ok(reservationService.createReservation(reservationDTO));
+    public ReservationDTO createReservation(@RequestBody ReservationDTO reservationDTO) {
+        return reservationService.createReservation(reservationDTO);
     }
 
-    // Оновити резервацію за ID
     @PutMapping("/{id}")
-    public ResponseEntity<ReservationDTO> updateReservation(
-            @PathVariable Long id,
-            @RequestBody ReservationDTO reservationDTO
-    ) {
-        return ResponseEntity.ok(reservationService.updateReservation(id, reservationDTO));
+    public ReservationDTO updateReservation(@PathVariable Long id, @RequestBody ReservationDTO reservationDTO) {
+        return reservationService.updateReservation(id, reservationDTO);
     }
 
-    // Видалити резервацію за ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+    public void deleteReservation(@PathVariable Long id) {
         reservationService.deleteReservation(id);
-        return ResponseEntity.noContent().build();
     }
 }

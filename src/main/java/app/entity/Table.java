@@ -12,6 +12,10 @@ public class Table {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id") // зв'язок з рестораном
+    private Restaurant restaurant;
+
     private Integer seats;
 
     private String location;
