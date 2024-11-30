@@ -8,13 +8,17 @@ import org.springframework.stereotype.Component;
 public class MessageMapper {
 
     // Перетворення з Entity у DTO
-    public MessageDTO toDTO(Message message) {
-        MessageDTO dto = new MessageDTO();
-        dto.setId(message.getId());
-        dto.setName(message.getName());
-        dto.setEmail(message.getEmail());
-        dto.setMessage(message.getMessage());
-        return dto;
+    public static MessageDTO toDTO(Message message) {
+        if (message == null) {
+            return null;
+        }
+
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setId(message.getId());
+        messageDTO.setName(message.getName());
+        messageDTO.setEmail(message.getEmail());
+        messageDTO.setMessage(message.getMessage());
+        return messageDTO;
     }
 
     // Перетворення з DTO у Entity

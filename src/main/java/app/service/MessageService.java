@@ -1,9 +1,15 @@
 package app.service;
 
 import app.dto.MessageDTO;
+import app.dto.RestaurantDTO;
 import app.entity.Message;
+import app.entity.Restaurant;
+import app.mapper.MessageMapper;
 import app.repository.MessageRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
@@ -41,4 +47,15 @@ public class MessageService {
         messageDTO.setMessage(message.getMessage());
         return messageDTO;
     }
+
+    public List<MessageDTO> getAllMessages() {
+        // Отримуємо всі повідомлення з репозиторію
+        List<Message> messages = messageRepository.findAll();
+
+        // Перетворюємо їх на DTO і повертаємо як список
+        return messages.stream()
+                .map(MessageMapper::toDTO)  // Перетворюємо кожен Message в MessageDTO
+                .collect(Collectors.toList());  // Збираємо результат у список
+    }
+
 }

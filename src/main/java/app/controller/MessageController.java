@@ -1,11 +1,14 @@
 package app.controller;
 
 import app.dto.MessageDTO;
+import app.dto.ReservationDTO;
 import app.service.MessageService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/messages")
+@RequestMapping("/api/messages")
 public class MessageController {
 
     private final MessageService messageService;
@@ -25,6 +28,11 @@ public class MessageController {
     @GetMapping("/{id}")
     public MessageDTO getMessage(@PathVariable Long id) {
         return messageService.getMessageById(id);
+    }
+
+    @GetMapping
+    public List<MessageDTO> getAllReservations() {
+        return messageService.getAllMessages();
     }
 
 }
