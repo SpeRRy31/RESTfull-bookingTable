@@ -17,7 +17,9 @@ public class Restaurant {
     private String address;
     private String typeWork;
 
-    @OneToMany(mappedBy = "restaurant")
+    // Вказуємо зв'язок з таблицями
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Table> tables;
 
 }
+

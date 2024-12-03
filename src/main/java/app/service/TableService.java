@@ -2,8 +2,8 @@ package app.service;
 
 import app.dto.TableDTO;
 import app.entity.Table;
-import app.repository.TableRepository;
 import app.mapper.TableMapper;
+import app.repository.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

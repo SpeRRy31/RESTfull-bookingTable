@@ -2,8 +2,8 @@ package app.service;
 
 import app.dto.RestaurantDTO;
 import app.entity.Restaurant;
-import app.repository.RestaurantRepository;
 import app.mapper.RestaurantMapper;
+import app.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

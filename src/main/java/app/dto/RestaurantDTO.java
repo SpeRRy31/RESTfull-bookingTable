@@ -9,5 +9,7 @@ public class RestaurantDTO {
     private String name;
     private String address;
     private String typeWork;
-    private List<TableDTO> tables; // додано зв'язок
+
+
+//    private List<TableDTO> tables; // додано зв'язок
 }
