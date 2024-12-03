@@ -1,14 +1,12 @@
 package app.service;
 
-import app.dto.UserDTO;
 import app.entity.User;
-import app.mapper.UserMapper;
 import app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -16,37 +14,42 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private UserMapper userMapper;
-
-    public UserDTO getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        return userMapper.toDTO(user);
+    // Отримання всіх користувачів
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    public List<UserDTO> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(userMapper::toDTO)
-                .collect(Collectors.toList());
+    // Отримання користувача за ID
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 
-    public UserDTO createUser(UserDTO userDTO) {
-        User user = userMapper.toEntity(userDTO);
-        user = userRepository.save(user);
-        return userMapper.toDTO(user);
+    // Додавання нового користувача
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
 
-    public UserDTO updateUser(Long id, UserDTO userDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setIsAdmin(userDTO.getIsAdmin());
-        user = userRepository.save(user);
-        return userMapper.toDTO(user);
+    // Оновлення користувача
+    public User updateUser(Long id, User userDetails) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setName(userDetails.getName());
+            user.setEmail(userDetails.getEmail());
+            user.setPassword(userDetails.getPassword());
+            user.setPhoneNumber(userDetails.getPhoneNumber());
+            user.setIsAdmin(userDetails.getIsAdmin());
+            return userRepository.save(user);
+        }
+        throw new RuntimeException("Користувач із ID " + id + " не знайдений.");
     }
 
+    // Видалення користувача
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Користувач із ID " + id + " не знайдений.");
+        }
     }
 }

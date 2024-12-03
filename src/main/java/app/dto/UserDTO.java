@@ -8,6 +8,7 @@ import java.util.List;
 public class UserDTO {
     private Long id;
     private String name;
+    private String password;
     private String email;
     private String phoneNumber;
     private Boolean isAdmin;
